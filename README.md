@@ -10,7 +10,7 @@
 
 </div>
 
-## ❤️Sponsor
+## ❤️ Collaboration
 
 [![MiniMax](assets/partners/minimax.jpg)](https://platform.minimax.io/subscribe/coding-plan?code=5q2B2ljfdw&source=link)
 
