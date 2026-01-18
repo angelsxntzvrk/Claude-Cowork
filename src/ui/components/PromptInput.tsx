@@ -9,6 +9,7 @@ const MAX_HEIGHT = MAX_ROWS * LINE_HEIGHT;
 
 interface PromptInputProps {
   sendEvent: (event: ClientEvent) => void;
+  onSendMessage?: () => void;
 }
 
 export function usePromptActions(sendEvent: (event: ClientEvent) => void) {
@@ -67,7 +68,7 @@ export function usePromptActions(sendEvent: (event: ClientEvent) => void) {
   return { prompt, setPrompt, isRunning, handleSend, handleStop, handleStartFromModal };
 }
 
-export function PromptInput({ sendEvent }: PromptInputProps) {
+export function PromptInput({ sendEvent, onSendMessage }: PromptInputProps) {
   const { prompt, setPrompt, isRunning, handleSend, handleStop } = usePromptActions(sendEvent);
   const promptRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -75,7 +76,17 @@ export function PromptInput({ sendEvent }: PromptInputProps) {
     if (e.key !== "Enter" || e.shiftKey) return;
     e.preventDefault();
     if (isRunning) { handleStop(); return; }
+    onSendMessage?.();
     handleSend();
+  };
+
+  const handleButtonClick = () => {
+    if (isRunning) {
+      handleStop();
+    } else {
+      onSendMessage?.();
+      handleSend();
+    }
   };
 
   const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -119,7 +130,7 @@ export function PromptInput({ sendEvent }: PromptInputProps) {
         />
         <button
           className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${isRunning ? "bg-error text-white hover:bg-error/90" : "bg-accent text-white hover:bg-accent-hover"}`}
-          onClick={isRunning ? handleStop : handleSend}
+          onClick={handleButtonClick}
           aria-label={isRunning ? "Stop session" : "Send prompt"}
         >
           {isRunning ? (
